@@ -30,6 +30,9 @@ export default class CreditCalculator {
   constructor() {
     this.percentRate = configuration.percentRate || this.percentRate;
     this.carPrice = +$('[data-price]').text().split(' ').join('');
+    if ($('[data-price]').data('price')) {
+      this.carPrice = $('[data-price]').data('price');
+    }
     this.creditTotal = +$('#credit-sum-value').data('value');
     this.type = this.carPrice === 0 ? 'CreditOnly' : 'CreditCar';
 

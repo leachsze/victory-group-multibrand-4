@@ -87,9 +87,10 @@
         justify-content: center;
         align-items: center;
         height: 494px;
-        background: linear-gradient(0deg, #2E58DB -16.45%, #ffffff 61.15%);
+        background: #fff;
 
         &.deal {
+            background: linear-gradient(0deg, #2E58DB -16.45%, #ffffff 61.15%);
             .preview-info__title {
                 color: $white;
             }

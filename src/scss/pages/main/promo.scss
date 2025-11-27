@@ -16,6 +16,46 @@
   &__item {
     border-radius: $border-radius;
     background: $white;
+    position: relative;
+    overflow: hidden;
+    &-image{
+      border-radius: $border-radius $border-radius 0 0;
+      width: 100%;
+      height: 100%;
+      &-wrap{
+        background: #E4ECF8;
+        width: 100%;
+        height: 100%;
+      }
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0%,
+          white 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        animation: shimmer 1.5s infinite;
+        z-index: 1;
+        pointer-events: none;
+      }
+    
+      &.loaded::before {
+        display: none;
+
+      }
+    
+      & img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+       }
+    }
   }
 
   &__header {
@@ -23,10 +63,11 @@
     position: relative;
     border-radius: $border-radius;
     
-    img {
-      border-radius: $border-radius $border-radius 0 0;
-    }
+    // img {
+    //   border-radius: $border-radius $border-radius 0 0;
+    // }
   }
+ 
 
   &__label {
     position: absolute;
@@ -40,6 +81,7 @@
     text-transform: uppercase;
     top: 20px;
     left: 20px;
+    z-index: 2;
 
     &__trade-in {
       line-height: 22px;

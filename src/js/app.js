@@ -135,6 +135,27 @@ window.app = {
       navigation: defaultNavigation,
     });
 
+    $.fn.shuffle = function() {
+      var allElems = this.get();
+      var getRandom = function(max) {
+        return Math.floor(Math.random() * max);
+      };
+      var shuffled = $.map(allElems, function() {
+        var random = getRandom(allElems.length);
+        var randEl = $(allElems[random]).clone(true)[0];
+        allElems.splice(random, 1);
+        return randEl;
+      });
+
+      this.each(function(i) {
+        $(this).replaceWith($(shuffled[i]));
+      });
+      return $(shuffled);
+    };
+
+    const bannerSlides = $('.banner-swiper').find('.swiper-slide');
+    bannerSlides.shuffle();
+
     const bannerSwiper = new Swiper('.banner-swiper', {
       ...slides.bannerSwiper,
       modules: [Pagination, Autoplay],
@@ -380,6 +401,16 @@ window.app = {
     });
   },
   runFormsValidation: () => {
+    jQuery.validator.addMethod('agreementValidator', function(value, element) {
+      const isChecked = $(element).is(':checked');
+      if (!isChecked) {
+        $('.agreement__wrapper').addClass('shake');
+        return false;
+      }
+      $('.agreement__wrapper').removeClass('shake');
+      return true;
+    });
+
     jQuery.validator.addMethod('ruPhone', function(phone_number, element) {
       function countDigits(str) {
         const regex = /\d/g;
@@ -514,10 +545,13 @@ window.app = {
         }
       });
     }
-
     $('.js-form-validator').each(function() {
       $(this).validate({
         rules: {
+          license: {
+            // required: true,
+            agreementValidator: true,
+          },
           name: {
             required: true,
             minlength: 2,
@@ -532,6 +566,7 @@ window.app = {
           },
         },
         messages: {
+          license: 'Вы должны принять условия',
           name: 'Поле должно быть заполнено',
           agreement: 'Поле должно быть заполнено',
           telephone: 'Номер телефона должен содержать 11 цифр',
@@ -602,6 +637,12 @@ window.app = {
           modalBody.find('.modal-attachments');
         }
       });
+    });
+    $('.modal').on('modal:open', () => {
+      $('body').addClass('body-offset');
+    });
+    $('.modal').on('modal:close', () => {
+      $('body').removeClass('body-offset');
     });
   },
   runVideoSelect: () => {
@@ -820,6 +861,24 @@ window.app = {
       target.closest('.modification-details').find('.specs__container').toggleClass('active');
     });
   },
+  loadFooter: () => {
+    function fetchTemplate(template, data, container, callback) {
+      $.ajax({
+        url: '/ajax-get-template-fronend',
+        method: 'GET',
+        data: { template, ...data },
+        success: function(response) {
+          container.html(response);
+          if (callback) callback(null, response); // Передаем ответ в callback
+        },
+        error: function(xhr, status, error) {
+          console.error(error);
+          if (callback) callback(error); // Передаем ошибку в callback
+        },
+      });
+    }
+    fetchTemplate('ajax-footer', {}, $('.footer__contents__bottom-text'));
+  },
 };
 
 window.app.runSummary();
@@ -843,3 +902,4 @@ window.app.runOfferBanner();
 window.app.runCallbackWidget();
 window.app.runCompare();
 window.app.compareButtonInit();
+window.app.loadFooter();
